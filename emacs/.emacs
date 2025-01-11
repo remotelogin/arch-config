@@ -1,4 +1,5 @@
 (global-display-line-numbers-mode 1)
+
 ;; Add MELPA repository if not already added
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -8,6 +9,10 @@
 (unless (package-installed-p 'lsp-mode)
   (package-refresh-contents)
   (package-install 'lsp-mode))
+
+(unless (package-installed-p 'centered-cursor-mode)
+  (package-refresh-contents)
+  (package-install 'centered-cursor-mode))
 
 ;; Install lsp-ui for better UI features (optional)
 (unless (package-installed-p 'lsp-ui)
