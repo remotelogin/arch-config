@@ -1,0 +1,2 @@
+xrandr --output DP-1 --mode 3840x2160 --primary --output DP-2 --rotate right --mode 1920x1080 --left-of DP-1 --output DP-3 --rotate right --mode 1920x1080 --left-of DP-2
+
