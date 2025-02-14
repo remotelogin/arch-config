@@ -19,6 +19,17 @@
   (package-refresh-contents)
   (package-install 'lsp-ui))
 
+;; pdf me to deat
+(unless (package-installed-p 'pdf-tools)
+  (package-refresh-contents)
+  (package-install 'pdf-tools))
+
+(pdf-tools-install)
+
+;; Install orgmode
+(unless (package-installed-p 'org)
+  (package-install 'org))
+
 ;; Install company-mode for autocompletion (optional)
 (unless (package-installed-p 'company)
   (package-refresh-contents)
@@ -33,6 +44,11 @@
 
 ;; Optional: Enable company-mode for autocompletion
 (add-hook 'lsp-mode-hook 'company-mode)
+
+(setq org-file-apps
+      '((auto-mode . emacs)
+        ("\\.pdf\\'" . "evince %s")  ;; Replace 'evince' with your preferred PDF viewer
+        ("\\.x?html?\\'" . "firefox %s")))  ;; Example for HTML files
 
 ;; Set the path to clangd if it's not in your PATH
 ;;(setq lsp-clangd-executable "/bin/clangd")  ;; Adjust this path if necessary
