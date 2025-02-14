@@ -5,6 +5,16 @@
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
+;;styling
+
+(load-theme 'wombat t)
+
+(menu-bar-mode -1)
+
+(tool-bar-mode -1)
+
+(scroll-bar-mode -1)
+
 ;; Install lsp-mode if not already installed
 (unless (package-installed-p 'lsp-mode)
   (package-refresh-contents)
@@ -47,8 +57,8 @@
 
 (setq org-file-apps
       '((auto-mode . emacs)
-        ("\\.pdf\\'" . "evince %s")  ;; Replace 'evince' with your preferred PDF viewer
-        ("\\.x?html?\\'" . "firefox %s")))  ;; Example for HTML files
+        ("\\.pdf\\'" . "evince %s")  
+        ("\\.x?html?\\'" . "firefox %s")))  
 
 ;; Set the path to clangd if it's not in your PATH
 ;;(setq lsp-clangd-executable "/bin/clangd")  ;; Adjust this path if necessary
@@ -64,3 +74,11 @@
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
+
+;; keybinds
+
+(defun my-lsp-mode-setup ()
+  (define-key lsp-mode-map (kbd "C-x C-a") 'lsp-signature-help)
+  (define-key lsp-mode-map (kbd "C-x C-d") 'lsp-describe-session))
+
+(add-hook 'lsp-mode-hook 'my-lsp-mode-setup)
