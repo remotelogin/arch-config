@@ -1,5 +1,3 @@
-(global-display-line-numbers-mode 1)
-
 ;; Add MELPA repository if not already added
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
@@ -8,6 +6,8 @@
 ;;styling
 
 (load-theme 'wombat t)
+
+(global-display-line-numbers-mode 1)
 
 (menu-bar-mode -1)
 
@@ -29,7 +29,7 @@
   (package-refresh-contents)
   (package-install 'lsp-ui))
 
-;; pdf me to deat
+;; pdf me to death
 (unless (package-installed-p 'pdf-tools)
   (package-refresh-contents)
   (package-install 'pdf-tools))
@@ -40,7 +40,7 @@
 (unless (package-installed-p 'org)
   (package-install 'org))
 
-;; Install company-mode for autocompletion (optional)
+;; Install company-mode for autocompletion
 (unless (package-installed-p 'company)
   (package-refresh-contents)
   (package-install 'company))
@@ -49,31 +49,18 @@
 (add-hook 'c++-mode-hook #'lsp)
 (add-hook 'c-mode-hook #'lsp)
 
-;; Optional: Enable lsp-ui features
 (add-hook 'lsp-mode-hook 'lsp-ui-mode)
 
-;; Optional: Enable company-mode for autocompletion
 (add-hook 'lsp-mode-hook 'company-mode)
 
 (setq org-file-apps
       '((auto-mode . emacs)
-        ("\\.pdf\\'" . "evince %s")  
+        ("\\.pdf\\'" . "evince %s")
         ("\\.x?html?\\'" . "firefox %s")))  
 
-;; Set the path to clangd if it's not in your PATH
-;;(setq lsp-clangd-executable "/bin/clangd")  ;; Adjust this path if necessary
 (custom-set-variables
- ;; custom-set-variables was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
  '(package-selected-packages '(company lsp-ui lsp-mode)))
-(custom-set-faces
- ;; custom-set-faces was added by Custom.
- ;; If you edit it by hand, you could mess it up, so be careful.
- ;; Your init file should contain only one such instance.
- ;; If there is more than one, they won't work right.
- )
+(custom-set-faces)
 
 ;; keybinds
 
