@@ -129,5 +129,5 @@
 
 (provide-theme 'fish)
 
-(load-theme 'fish)
+(enable-theme 'fish)
 ;;; fish-theme.el ends here
