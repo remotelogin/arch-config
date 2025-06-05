@@ -114,6 +114,7 @@
    '(font-lock-string-face ((t (:foreground "#6fddcf" ))))
    '(font-lock-type-face ((t (:foreground "#d3869b" ))))
    '(font-lock-constant-face ((t (:foreground "#d3869b" ))))
+   '(ansi-color-blue ((t (:foreground "deep sky blue" :background "black"))))
    '(font-lock-variable-name-face ((t (:foreground "#83a598" ))))
    '(minibuffer-prompt ((t (:foreground "#f279f4" :bold t ))))
    '(font-lock-warning-face ((t (:foreground "red" :bold t ))))
