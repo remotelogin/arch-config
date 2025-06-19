@@ -15,6 +15,8 @@
 
 (scroll-bar-mode -1)
 
+(global-set-key (kbd "C-x t") #'lsp-clangd-find-other-file)
+
 ;; Install lsp-mode if not already installed
 (unless (package-installed-p 'lsp-mode)
   (package-refresh-contents)
