@@ -1,4 +1,54 @@
-while true; do xsetroot -name "ProLiant dl380 g10 | Installed RAM: $(free -m | grep Mem: | cut -c 13-22 | xargs -n 1 bash -c 'echo $(($1/1000))' args)GB, Used RAM: $(free -m | grep Mem: | cut -c 26-36 | xargs -n 1 bash -c 'echo $(($1/1000))' args)GB  | $(uptime | cut -c 31-60) | $(date +"%a
+#!/bin/sh
+
+prefix="/usr"
+exec_prefix="${prefix}"
+xrdb="xrdb"
+xinitdir="/etc/X11/xinit"
+xclock="xclock"
+xterm="xterm"
+twm="twm"
+xmodmap="xmodmap"
+
+userresources="$HOME/.Xresources"
+usermodmap="$HOME/.Xmodmap"
+sysresources="$xinitdir/.Xresources"
+sysmodmap="$xinitdir/.Xmodmap"
+
+# merge in defaults and keymaps
+
+if [ -f "$sysresources" ]; then
+    if [ -x /usr/bin/cpp ] ; then
+        "$xrdb" -merge "$sysresources"
+    else
+        "$xrdb" -nocpp -merge "$sysresources"
+    fi
+fi
+
+if [ -f "$sysmodmap" ]; then
+    "$xmodmap" "$sysmodmap"
+fi
+
+if [ -f "$userresources" ]; then
+    if [ -x /usr/bin/cpp ] ; then
+        "$xrdb" -merge "$userresources"
+    else
+        "$xrdb" -nocpp -merge "$userresources"
+    fi
+fi
+
+if [ -f "$usermodmap" ]; then
+    "$xmodmap" "$usermodmap"
+fi
+
+if [ -d /etc/X11/xinit/xinitrc.d ] ; then
+ for f in /etc/X11/xinit/xinitrc.d/?*.sh ; do
+  [ -x "$f" ] && . "$f"
+ done
+ unset f
+fi
+
+while true; do xsetroot -name "Normie Pc lol | Installed RAM: $(free -m | grep Mem: | cut -c 13-22 | xargs -n 1 bash -c 'echo $(($1/1000))' args)GB, Used RAM: $(free -m | grep Mem: | cut -c 26-36 | xargs -n 1 bash -c 'echo $(($1/1000))' args)GB  | $(uptime | cut -c 31-60) | $(date +"%a
 %d.%m.%y %H:%M:%S")"; sleep 2; done &
 xset s off -dpms &
 exec dwm
+
