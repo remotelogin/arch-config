@@ -103,9 +103,9 @@
 
 (deftheme fish "DOCSTRING for fish")
   (custom-theme-set-faces 'fish
-   '(default ((t (:foreground "#d4d4d4" :background "#2a1b3c" ))))
+   '(default ((t (:foreground "#FFFFFF" :background "#000000" ))))
    '(cursor ((t (:background "#e500ff" ))))
-   '(fringe ((t (:background "#282828" ))))
+   '(fringe ((t (:background "#000000" ))))
    '(mode-line ((t (:foreground "#282828" :background "#b9a4c3" ))))
    '(region ((t (:background "#bd2f54" ))))
    '(secondary-selection ((t (:background "#3e3834" ))))
