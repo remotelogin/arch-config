@@ -104,11 +104,16 @@
 (deftheme fish "DOCSTRING for fish")
   (custom-theme-set-faces 'fish
    '(default ((t (:foreground "#FFFFFF" :background "#000000" ))))
+   ;cursor
    '(cursor ((t (:background "#e500ff" ))))
+   ;border left/right
    '(fringe ((t (:background "#000000" ))))
-   '(mode-line ((t (:foreground "#282828" :background "#b9a4c3" ))))
+   ;bottom bar
+   '(mode-line ((t (:foreground "#cfcfcf" :background "#282828" ))))
+   ;selection
    '(region ((t (:background "#bd2f54" ))))
    '(secondary-selection ((t (:background "#3e3834" ))))
+   ;idk lol
    '(font-lock-builtin-face ((t (:foreground "#7fd7ea" ))))
    '(font-lock-comment-face ((t (:foreground "#6d98ec" ))))
    '(font-lock-function-name-face ((t (:foreground "#ea54d2" ))))
@@ -124,8 +129,6 @@
    '(flymake-error ((t (:underline (:style wave :color "red")))))
    '(flymake-warning ((t (:underline (:style wave :color "orange")))))
    '(flymake-note ((t (:underline (:style wave :color "green")))))
-
-   ;; Optional: LSP-specific highlighting (used in some cases)
    '(lsp-face-semhl-error ((t (:underline (:style wave :color "red")))))
    '(lsp-face-semhl-warning ((t (:underline (:style wave :color "orange")))))
    '(lsp-face-semhl-information ((t (:underline (:style wave :color "green")))))
