@@ -118,9 +118,28 @@
    '(font-lock-constant-face ((t (:foreground "#d3869b" ))))
    '(ansi-color-blue ((t (:foreground "deep sky blue" :background "black"))))
    '(font-lock-variable-name-face ((t (:foreground "#83a598" ))))
-   '(minibuffer-prompt ((t (:foreground "#f279f4" :bold t ))))
+   '(minibuffer-prompt ((t (:foreground "#ffffff" :background "#000000" :bold t ))))
    '(font-lock-warning-face ((t (:foreground "red" :bold t ))))
+   ;; Flymake (LSP diagnostics)
+   '(flymake-error ((t (:underline (:style wave :color "red")))))
+   '(flymake-warning ((t (:underline (:style wave :color "orange")))))
+   '(flymake-note ((t (:underline (:style wave :color "green")))))
+
+   ;; Optional: LSP-specific highlighting (used in some cases)
+   '(lsp-face-semhl-error ((t (:underline (:style wave :color "red")))))
+   '(lsp-face-semhl-warning ((t (:underline (:style wave :color "orange")))))
+   '(lsp-face-semhl-information ((t (:underline (:style wave :color "green")))))
    )
+
+(defun my/flymake-use-background ()
+  (face-remap-add-relative
+   'flymake-error '(:background "#ff2323"))
+  (face-remap-add-relative
+   'flymake-warning '(:background "#ffc54d"))
+  (face-remap-add-relative
+   'flymake-note '(:background "#93ff4d")))
+
+(add-hook 'flymake-mode-hook #'my/flymake-use-background)
 
 ;;;###autoload
 (and load-file-name
