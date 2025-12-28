@@ -1,158 +1,117 @@
-;; Add MELPA repository if not already added
+;; ------------------------------------------------------------
+;; Package System Setup
+;; ------------------------------------------------------------
 (require 'package)
 (add-to-list 'package-archives '("melpa" . "https://melpa.org/packages/") t)
 (package-initialize)
 
-;;config
+;; Bootstrap use-package
+(unless (package-installed-p 'use-package)
+  (package-refresh-contents)
+  (package-install 'use-package))
 
+(require 'use-package)
+(setq use-package-always-ensure t)
+
+;; ------------------------------------------------------------
+;; UI / Quality of Life
+;; ------------------------------------------------------------
+(setq inhibit-startup-screen t)
 (global-display-line-numbers-mode 1)
-
 (menu-bar-mode -1)
-
+(tool-bar-mode -1)
+(scroll-bar-mode -1)
 (setq-default line-spacing 0.4)
 
-(tool-bar-mode -1)
+;; Centering cursor
+(use-package centered-cursor-mode
+  :hook ((text-mode prog-mode) . centered-cursor-mode))
 
-(scroll-bar-mode -1)
+;; Custom theme (fish)
+(load-file "~/.emacs.d/fish-theme.el")
+(enable-theme 'fish)
 
-(global-set-key (kbd "C-x t") #'lsp-clangd-find-other-file)
+;; Autosave directory
+(unless (file-exists-p "~/autosave/")
+  (make-directory "~/autosave/"))
+(setq auto-save-file-name-transforms '((".*" "~/autosave/" t)))
 
-;; Install lsp-mode if not already installed
-(unless (package-installed-p 'lsp-mode)
-  (package-refresh-contents)
-  (package-install 'lsp-mode))
+;; ------------------------------------------------------------
+;; LSP + Completion
+;; ------------------------------------------------------------
+(use-package company
+  :init (global-company-mode))
 
-(unless (package-installed-p 'centered-cursor-mode)
-  (package-refresh-contents)
-  (package-install 'centered-cursor-mode))
+(use-package lsp-mode
+  :hook ((c++-mode . lsp)
+         (c-mode   . lsp))
+  :commands lsp
+  :config
+  (define-key lsp-mode-map (kbd "C-x C-a") #'lsp-signature-help)
+  (define-key lsp-mode-map (kbd "C-x C-d") #'lsp-describe-session))
 
-;; Install lsp-ui for better UI features
-(unless (package-installed-p 'lsp-ui)
-  (package-refresh-contents)
-  (package-install 'lsp-ui))
+(use-package lsp-ui
+  :hook (lsp-mode . lsp-ui-mode))
 
-;; pdf me to death
-(unless (package-installed-p 'pdf-tools)
-  (package-refresh-contents)
-  (package-install 'pdf-tools))
+;; ------------------------------------------------------------
+;; LaTeX / AUCTeX / PDF Tools
+;; ------------------------------------------------------------
+(use-package auctex
+  :defer t)
 
-(pdf-tools-install)
+(use-package tex
+  :ensure auctex
+  :config
+  ;; Add LatexMk
+  (add-to-list 'TeX-command-list
+               '("LatexMk" "latexmk -pdf -interaction=nonstopmode %s"
+                 TeX-run-TeX nil t :help "Run latexmk"))
 
-;; Install orgmode
-(unless (package-installed-p 'org)
-  (package-install 'org))
+  (setq TeX-command-default "LatexMk"
+        TeX-source-correlate-mode t
+        TeX-source-correlate-method 'synctex
+        TeX-save-query nil
+        TeX-master nil)
 
-;; Install company-mode for autocompletion
-(unless (package-installed-p 'company)
-  (package-refresh-contents)
-  (package-install 'company))
+  ;; Auto-refresh PDF buffer
+  (add-hook 'TeX-after-compilation-finished-functions
+            #'TeX-revert-document-buffer)
 
-;; Enable lsp-mode for C++ files
-(add-hook 'c++-mode-hook #'lsp)
-(add-hook 'c-mode-hook #'lsp)
+  ;; PDF Tools viewer
+  (setq TeX-view-program-selection '((output-pdf "PDF Tools")))
+  (setq TeX-view-program-list '(("PDF Tools" TeX-pdf-tools-sync-view))))
 
-(add-hook 'lsp-mode-hook 'lsp-ui-mode)
+(use-package pdf-tools
+  :config
+  (pdf-tools-install))
 
-(add-hook 'lsp-mode-hook 'company-mode)
 
+(add-hook 'LaTeX-mode-hook
+          (lambda ()
+            (add-hook 'after-save-hook
+                      #'TeX-command-master nil t)))
+
+;; ------------------------------------------------------------
+;; Org-Mode (uses built-in version)
+;; ------------------------------------------------------------
 (setq org-file-apps
       '((auto-mode . emacs)
         ("\\.pdf\\'" . "evince %s")
-        ("\\.x?html?\\'" . "firefox %s")))  
+        ("\\.x?html?\\'" . "firefox %s")))
 
+;; ------------------------------------------------------------
+;; Keybindings
+;; ------------------------------------------------------------
+(global-set-key (kbd "C-x t") #'lsp-clangd-find-other-file)
 (custom-set-variables
  ;; custom-set-variables was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
- '(custom-safe-themes
-   '("e68e3e9e25753d18ee87743b315538b7c5dd3299319fea1eb1c3d4d588fa6a71"
-     "1952e0d6376807f78ffc6f17bb0aa2a21029a1f83414d47791b03997c8e538f1"
-     default))
- '(package-selected-packages '(company fish-theme lsp-mode lsp-ui)))
+ '(package-selected-packages nil))
 (custom-set-faces
  ;; custom-set-faces was added by Custom.
  ;; If you edit it by hand, you could mess it up, so be careful.
  ;; Your init file should contain only one such instance.
  ;; If there is more than one, they won't work right.
  )
-
-;; Create the new autosave directory if it doesn't exist
-(unless (file-exists-p "~/autosave/")
-  (make-directory "~/autosave/"))
-
-;; Set the autosave directory
-(setq auto-save-file-name-transforms
-      `((".*" "~/autosave/" t)))
-
-;; keybinds
-
-(defun my-lsp-mode-setup ()
-  (define-key lsp-mode-map (kbd "C-x C-a") 'lsp-signature-help)
-  (define-key lsp-mode-map (kbd "C-x C-d") 'lsp-describe-session))
-
-(add-hook 'lsp-mode-hook 'my-lsp-mode-setup)
-
-;; STYLING : warning very long: dont bother scrolling down, all important config above :3
-
-;;; fish-theme.el --- fish
-;;; Version: 1.0
-;;; Commentary:
-;;; A theme called fish
-;;; Code:
-
-(deftheme fish "DOCSTRING for fish")
-  (custom-theme-set-faces 'fish
-   '(default ((t (:foreground "#FFFFFF" :background "#000000" ))))
-   ;cursor
-   '(cursor ((t (:background "#e500ff" ))))
-   ;border left/right
-   '(fringe ((t (:background "#000000" ))))
-   ;bottom bar
-   '(mode-line ((t (:foreground "#cfcfcf" :background "#282828" ))))
-   ;selection
-   '(region ((t (:background "#bd2f54" ))))
-   '(secondary-selection ((t (:background "#3e3834" ))))
-   ;idk lol
-   '(font-lock-builtin-face ((t (:foreground "#7fd7ea" ))))
-   '(font-lock-comment-face ((t (:foreground "#6d98ec" ))))
-   '(font-lock-function-name-face ((t (:foreground "#ea54d2" ))))
-   '(font-lock-keyword-face ((t (:foreground "#cea4ff" ))))
-   '(font-lock-string-face ((t (:foreground "#6fddcf" ))))
-   '(font-lock-type-face ((t (:foreground "#d3869b" ))))
-   '(font-lock-constant-face ((t (:foreground "#d3869b" ))))
-   '(ansi-color-blue ((t (:foreground "deep sky blue" :background "black"))))
-   '(font-lock-variable-name-face ((t (:foreground "#83a598" ))))
-   '(minibuffer-prompt ((t (:foreground "#ffffff" :background "#000000" :bold t ))))
-   '(font-lock-warning-face ((t (:foreground "red" :bold t ))))
-   ;; Flymake (LSP diagnostics)
-   '(flymake-error ((t (:underline (:style wave :color "red")))))
-   '(flymake-warning ((t (:underline (:style wave :color "orange")))))
-   '(flymake-note ((t (:underline (:style wave :color "green")))))
-   '(lsp-face-semhl-error ((t (:underline (:style wave :color "red")))))
-   '(lsp-face-semhl-warning ((t (:underline (:style wave :color "orange")))))
-   '(lsp-face-semhl-information ((t (:underline (:style wave :color "green")))))
-   )
-
-(defun my/flymake-use-background ()
-  (face-remap-add-relative
-   'flymake-error '(:background "#ff2323"))
-  (face-remap-add-relative
-   'flymake-warning '(:background "#ffc54d"))
-  (face-remap-add-relative
-   'flymake-note '(:background "#93ff4d")))
-
-(add-hook 'flymake-mode-hook #'my/flymake-use-background)
-
-;;;###autoload
-(and load-file-name
-    (boundp 'custom-theme-load-path)
-    (add-to-list 'custom-theme-load-path
-                 (file-name-as-directory
-                  (file-name-directory load-file-name))))
-;; Automatically add this theme to the load path
-
-(provide-theme 'fish)
-
-(enable-theme 'fish)
-;;; fish-theme.el ends here
